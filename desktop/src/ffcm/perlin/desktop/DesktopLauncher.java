@@ -13,8 +13,8 @@ public class DesktopLauncher
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		
 		config.title = "PerlinNoiseTest";
-		config.width = PerlinNoiseTest.V_WIDTH * PerlinNoiseTest.DESKTOP_SCALE;
-		config.height = PerlinNoiseTest.V_HEIGHT * PerlinNoiseTest.DESKTOP_SCALE;
+		config.width = (int)(PerlinNoiseTest.V_WIDTH * PerlinNoiseTest.DESKTOP_SCALE);
+		config.height = (int)(PerlinNoiseTest.V_HEIGHT * PerlinNoiseTest.DESKTOP_SCALE);
 		
 		new LwjglApplication(new PerlinNoiseTest(), config);
 	}

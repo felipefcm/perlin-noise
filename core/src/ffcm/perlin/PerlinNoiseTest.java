@@ -19,14 +19,15 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class PerlinNoiseTest extends ApplicationAdapter 
 {
-	public static final int V_WIDTH = 512;
-	public static final int V_HEIGHT = 512;
-	public static final int DESKTOP_SCALE = 1;
+	public static final int V_WIDTH = 256;
+	public static final int V_HEIGHT = 256;
+	public static final float DESKTOP_SCALE = 3.0f;
+	
+	public static final int TEXTURE_SIZE = 1024;
 	
 	//noise arguments
-	public static final int MATRIX_SIZE = 18;
-	public static final int OCTAVES = 16;
-	public static final float LACUNARITY = 2.1f;
+	public static final int MATRIX_SIZE = 16;
+	public static final float LACUNARITY = 1.8f;
 	public static final float GAIN = 0.65f;
 	
 	SpriteBatch spriteBatch;
@@ -36,7 +37,9 @@ public class PerlinNoiseTest extends ApplicationAdapter
 	Viewport viewport;
 	Camera camera;
 	
-	PerlinNoise noise;
+	PerlinNoise2d noise;
+	
+	int numOctaves = 12;
 	
 	@Override
 	public void create() 
@@ -46,12 +49,12 @@ public class PerlinNoiseTest extends ApplicationAdapter
 		viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		
 		spriteBatch = new SpriteBatch(100);
-		noise = new PerlinNoise(new Date().getTime(), MATRIX_SIZE);
 		
-		pixmap = new Pixmap(V_WIDTH, V_HEIGHT, Format.RGB888);
+		pixmap = new Pixmap(TEXTURE_SIZE, TEXTURE_SIZE, Format.RGB888);
 		
 		Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		
+		CreateNoiseGenerator();
 		GenerateNoiseTexture();
 		
 		Gdx.input.setInputProcessor
@@ -61,7 +64,15 @@ public class PerlinNoiseTest extends ApplicationAdapter
 				@Override
 				public boolean touchUp(int screenX, int screenY, int pointer, int button)
 				{
-					noise = new PerlinNoise(new Date().getTime(), MATRIX_SIZE);
+					CreateNoiseGenerator();
+
+					/*
+					if(button == 0)
+						++octaves;
+					else
+						--octaves;
+					*/
+					
 					GenerateNoiseTexture();
 					
 					return true;
@@ -70,9 +81,16 @@ public class PerlinNoiseTest extends ApplicationAdapter
 		);
 	}
 	
+	private void CreateNoiseGenerator()
+	{
+		noise = new PerlinNoise2d(new Date().getTime(), MATRIX_SIZE);
+	}
+	
 	private void GenerateNoiseTexture()
 	{
 		float maxVal = 0;
+		
+		long startTime = System.currentTimeMillis();
 		
 		for(int r = 0; r < pixmap.getHeight(); ++r)
 		{
@@ -83,8 +101,8 @@ public class PerlinNoiseTest extends ApplicationAdapter
 				
 				float noiseValue = 0;
 				
-				for(int oc = 0; oc < OCTAVES; ++oc)
-				{					
+				for(int oc = 0; oc < numOctaves; ++oc)
+				{
 					noiseValue += noise.GetNoiseValue(c * frequency, r * frequency) * amplitude;
 					frequency *= LACUNARITY;
 					amplitude *= GAIN;
@@ -100,7 +118,8 @@ public class PerlinNoiseTest extends ApplicationAdapter
 				
 				int pixelColor;
 				
-				pixelColor = MakeMapColors(noiseValue);
+				pixelColor = Color.rgba8888(noiseValue, noiseValue, noiseValue, 1.0f);
+				//pixelColor = MakeMapColors(noiseValue);
 				//pixelColor = MakeSin(noiseValue);
 				
 				pixmap.drawPixel(c, r, pixelColor);
@@ -113,6 +132,8 @@ public class PerlinNoiseTest extends ApplicationAdapter
 			texture.dispose();
 			
 		texture = new Texture(pixmap);
+		
+		System.out.println("Generated noise in " + (System.currentTimeMillis() - startTime) + "ms");
 	}
 	
 	private int MakeMapColors(float noiseValue)
@@ -157,7 +178,7 @@ public class PerlinNoiseTest extends ApplicationAdapter
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
 		{
-			spriteBatch.draw(texture, 0, 0);
+			spriteBatch.draw(texture, 0, 0, V_WIDTH, V_HEIGHT);
 		}
 		spriteBatch.end();
 	}
