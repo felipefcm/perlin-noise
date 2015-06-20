@@ -23,12 +23,12 @@ public class PerlinNoiseTest extends ApplicationAdapter
 	public static final int V_HEIGHT = 256;
 	public static final float DESKTOP_SCALE = 3.0f;
 	
-	public static final int TEXTURE_SIZE = 512;
+	public static final int TEXTURE_SIZE = 1024;
 	
 	//noise arguments
 	public static final int MATRIX_SIZE = 16;
-	public static final float LACUNARITY = 1.95f;
-	public static final float GAIN = 0.65f;
+	public static final float LACUNARITY = 1.6f;
+	public static final float GAIN = 0.8f;
 	
 	SpriteBatch spriteBatch;
 	Pixmap pixmap;
@@ -75,7 +75,7 @@ public class PerlinNoiseTest extends ApplicationAdapter
 					else
 						--numOctaves;
 					
-					//GenerateNoiseTexture();
+					GenerateNoiseTexture();
 					
 					return true;
 				}
@@ -176,6 +176,7 @@ public class PerlinNoiseTest extends ApplicationAdapter
 	
 	public void Update()
 	{	
+		/*
 		if(timeAccum <= 0.1f)
 		{
 			timeAccum += Gdx.graphics.getDeltaTime();
@@ -187,6 +188,7 @@ public class PerlinNoiseTest extends ApplicationAdapter
 			
 			timeAccum = 0;
 		}
+		*/
 	}
 	
 	@Override

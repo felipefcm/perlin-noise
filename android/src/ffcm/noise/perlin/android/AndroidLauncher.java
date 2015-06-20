@@ -1,10 +1,10 @@
-package ffcm.perlin.android;
+package ffcm.noise.perlin.android;
 
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import ffcm.perlin.PerlinNoiseTest;
+import ffcm.noise.perlin.PerlinNoiseTest;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override
