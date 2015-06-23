@@ -1,10 +1,10 @@
 
-package ffcm.perlin.desktop;
+package ffcm.noise.perlin.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
-import ffcm.perlin.PerlinNoiseTest;
+import ffcm.noise.perlin.PerlinNoiseTest;
 
 public class DesktopLauncher 
 {
