@@ -4,7 +4,7 @@ package ffcm.noise.perlin.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
-import ffcm.noise.perlin.PerlinNoiseTest;
+import ffcm.noise.perlin.PerlinNoiseApp;
 
 public class DesktopLauncher 
 {
@@ -13,9 +13,9 @@ public class DesktopLauncher
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		
 		config.title = "PerlinNoiseTest";
-		config.width = (int)(PerlinNoiseTest.V_WIDTH * PerlinNoiseTest.DESKTOP_SCALE);
-		config.height = (int)(PerlinNoiseTest.V_HEIGHT * PerlinNoiseTest.DESKTOP_SCALE);
+		config.width = (int)(PerlinNoiseApp.V_WIDTH * PerlinNoiseApp.DESKTOP_SCALE);
+		config.height = (int)(PerlinNoiseApp.V_HEIGHT * PerlinNoiseApp.DESKTOP_SCALE);
 		
-		new LwjglApplication(new PerlinNoiseTest(), config);
+		new LwjglApplication(new PerlinNoiseApp(), config);
 	}
 }

@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import ffcm.noise.perlin.PerlinNoiseTest;
+import ffcm.noise.perlin.PerlinNoiseApp;
 
 public class AndroidLauncher extends AndroidApplication
 {
@@ -15,6 +15,6 @@ public class AndroidLauncher extends AndroidApplication
 		super.onCreate(savedInstanceState);
 
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		initialize(new PerlinNoiseTest(), config);
+		initialize(new PerlinNoiseApp(), config);
 	}
 }
