@@ -1,6 +1,7 @@
 
 package ffcm.noise.perlin.mesh;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class HeightMesh
 {
@@ -22,24 +24,49 @@ public class HeightMesh
     {
         this.size = size;
         this.zValue = zValue;
-
-        CreateModel();
     }
 
-    private Vector3[][] CreateTrianglePlanePoints()
-	{
-		Vector3[][] points = new Vector3[size][size];
+    public void Create()
+    {
+        long time = TimeUtils.millis();
 
-		for(int r = 0; r < size; ++r)
-		{
-			for(int c = 0; c < size; ++c)
-			{
-				points[r][c] = new Vector3();
-			}
-		}
+        CreateModel();
 
-		return points;
-	}
+        time = TimeUtils.timeSinceMillis(time);
+        Gdx.app.log("HeightMesh", "Model created in " + time + "ms");
+    }
+
+    private short[] CreateIndexData()
+    {
+        final int numStrips = size - 1;
+        final int indicesPerStrip = 2 * size;
+        final int indicesForDegenTris = 2 * (numStrips - 1); //extra indices used for degenerate triangles
+
+        final int numIndexes = numStrips * indicesPerStrip + indicesForDegenTris;
+
+        short[] indices = new short[numIndexes];
+
+        int current = 0;
+
+        for(int r = 0; r < numStrips; ++r)
+        {
+            //copy index to create degenerate
+            if(r > 0) //skip the first row
+                indices[current++] = (short) (r * size); //repeat first index, c = 0
+
+            for(int c = 0; c < size; ++c)
+            {
+                indices[current++] = (short) (r * size + c);
+                indices[current++] = (short) ((r + 1) * size + c);
+            }
+
+            //copy index to create degenerate
+            if(r < numStrips - 1) //skip the last row
+                indices[current++] = (short) ((r + 2) * size - 1); //repeat last index, c = size - 1
+        }
+
+        return indices;
+    }
 
 	private void CreateModel()
 	{
@@ -50,11 +77,19 @@ public class HeightMesh
 			MeshPartBuilder meshBuilder = builder.part(
 				"terrain",
 				GL20.GL_TRIANGLE_STRIP,
-				VertexAttributes.Usage.Position, //| Usage.TextureCoordinates,
+				VertexAttributes.Usage.Position,
 				new Material()
 			);
 
-			//meshBuilder.vertex(
+            //create vertices: top-down, left to right
+            for(int r = 0; r < size; ++r)
+                for(int c = 0; c < size; ++c)
+			        meshBuilder.vertex(new Vector3(c, r, zValue), null, null, null);
+
+            short[] indices = CreateIndexData();
+
+            for(int i = 0; i < indices.length; ++i)
+                meshBuilder.index(indices[i]);
 		}
 		model = builder.end();
 

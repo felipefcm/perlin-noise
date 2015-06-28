@@ -1,9 +1,10 @@
 
-uniform mat4 u_projTrans;
+attribute vec3 a_position;
 
-attribute vec4 position;
+uniform mat4 u_worldTrans;
+uniform mat4 u_projViewTrans;
 
 void main()
 {
-	gl_Position = u_projTrans * position;
+	gl_Position = u_projViewTrans * u_worldTrans * vec4(a_position, 1.0);
 }
