@@ -9,12 +9,10 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ffcm.noise.perlin.input.AppInput;
 import ffcm.noise.perlin.mesh.HeightMesh;
-import ffcm.noise.perlin.mesh.HeightMeshShaderProvider;
+import ffcm.noise.perlin.shader.HeightMapShader;
 
 public class PerlinNoiseApp extends ApplicationAdapter
 {
@@ -24,10 +22,10 @@ public class PerlinNoiseApp extends ApplicationAdapter
 	public static final int V_HEIGHT = 768;
 	public static final float DESKTOP_SCALE = 1.0f;
 
-	private ShaderProgram shaderProgram;
+	public static final int MESH_SIZE = 10;
 
-	private FitViewport viewport;
 	private PerspectiveCamera camera;
+	private HeightMapShader heightMapShader;
 
 	private HeightMesh heightMesh;
 
@@ -46,14 +44,14 @@ public class PerlinNoiseApp extends ApplicationAdapter
 		camera.far = 100.0f;
 		camera.update();
 
-		//viewport = new FitViewport(V_WIDTH, V_HEIGHT, camera);
+		heightMapShader = new HeightMapShader();
+		heightMapShader.init();
 
-		modelBatch = new ModelBatch(new HeightMeshShaderProvider());
-		//modelBatch = new ModelBatch();
+		modelBatch = new ModelBatch();
 		
 		Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-		heightMesh = new HeightMesh(10, 0.0f);
+		heightMesh = new HeightMesh(MESH_SIZE, 0.0f);
 		heightMesh.Create();
 
 		modelInstance = new ModelInstance(heightMesh.GetModelInstance());
@@ -71,7 +69,7 @@ public class PerlinNoiseApp extends ApplicationAdapter
 
 		modelBatch.begin(camera);
 		{
-			modelBatch.render(modelInstance);
+			modelBatch.render(modelInstance, heightMapShader);
 		}
 		modelBatch.end();
 	}
@@ -84,9 +82,11 @@ public class PerlinNoiseApp extends ApplicationAdapter
 	@Override
 	public void resize(int width, int height)
 	{
-		//viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-
 		super.resize(width, height);
+
+		camera.viewportWidth = width;
+		camera.viewportHeight = height;
+		camera.update();
 	}
 
 	@Override
@@ -94,6 +94,7 @@ public class PerlinNoiseApp extends ApplicationAdapter
 	{
 		super.dispose();
 
+		heightMapShader.dispose();
 		modelBatch.dispose();
 	}
 }

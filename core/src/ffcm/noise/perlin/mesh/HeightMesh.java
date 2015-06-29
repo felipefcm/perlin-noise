@@ -77,14 +77,15 @@ public class HeightMesh
 			MeshPartBuilder meshBuilder = builder.part(
 				"terrain",
 				GL20.GL_TRIANGLE_STRIP,
-				VertexAttributes.Usage.Position,
+				VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorPacked,
 				new Material()
 			);
 
             //create vertices: top-down, left to right
+            //multiply y by -1 because y-axis grow upwards
             for(int r = 0; r < size; ++r)
                 for(int c = 0; c < size; ++c)
-			        meshBuilder.vertex(new Vector3(c, r, zValue), null, null, null);
+			        meshBuilder.vertex(new Vector3(c, -r, zValue), null, null, null);
 
             short[] indices = CreateIndexData();
 
