@@ -43,7 +43,6 @@ public class HeightMapShader implements Shader
 
         renderContext.setDepthTest(GL20.GL_LEQUAL);
         renderContext.setCullFace(GL20.GL_BACK);
-
     }
 
     @Override
@@ -54,7 +53,6 @@ public class HeightMapShader implements Shader
         renderable.mesh.render(
             shaderProgram,
             renderable.primitiveType,
-            //GL20.GL_POINTS,
             renderable.meshPartOffset,
             renderable.meshPartSize
         );

@@ -3,13 +3,13 @@ package ffcm.noise.perlin.mesh;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class HeightMesh
@@ -69,33 +69,47 @@ public class HeightMesh
     }
 
 	private void CreateModel()
-	{
-		ModelBuilder builder = new ModelBuilder();
+    {
+        short[] indices = CreateIndexData();
 
+        Mesh mesh = new Mesh(
+            true,
+            size * size,
+            indices.length,
+            new VertexAttribute(VertexAttributes.Usage.Position, 3, "a_position"),
+            new VertexAttribute(VertexAttributes.Usage.ColorUnpacked, 4, "a_color")
+        );
+
+        float[] vertices = new float[7 * size * size];
+        int index = 0;
+
+        for(int r = 0; r < size; ++r)
+        {
+            for(int c = 0; c < size; ++c)
+            {
+                vertices[index++] = c;
+                vertices[index++] = -r;
+                vertices[index++] = zValue;
+
+                vertices[index++] = 0;
+                vertices[index++] = 0;
+                vertices[index++] = 1.0f;
+                vertices[index++] = 1.0f;
+            }
+        }
+
+        mesh.setVertices(vertices);
+        mesh.setIndices(indices);
+
+        ModelBuilder builder = new ModelBuilder();
 		builder.begin();
-		{
-			MeshPartBuilder meshBuilder = builder.part(
-				"terrain",
-				GL20.GL_TRIANGLE_STRIP,
-				VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorPacked,
-				new Material()
-			);
-
-            //create vertices: top-down, left to right
-            //multiply y by -1 because y-axis grow upwards
-            for(int r = 0; r < size; ++r)
-                for(int c = 0; c < size; ++c)
-			        meshBuilder.vertex(new Vector3(c, -r, zValue), null, null, null);
-
-            short[] indices = CreateIndexData();
-
-            for(int i = 0; i < indices.length; ++i)
-                meshBuilder.index(indices[i]);
-		}
+        {
+		    builder.part("terrain", mesh, GL20.GL_TRIANGLE_STRIP, new Material());
+        }
 		model = builder.end();
 
 		modelInstance = new ModelInstance(model);
-	}
+    }
 
 	public ModelInstance GetModelInstance()
     {

@@ -31,6 +31,8 @@ public class PerlinNoiseApp extends ApplicationAdapter
 
 	private ModelBatch modelBatch;
 	private ModelInstance modelInstance;
+
+	public CameraInputController cameraInputController;
 	
 	@Override
 	public void create() 
@@ -56,7 +58,7 @@ public class PerlinNoiseApp extends ApplicationAdapter
 
 		modelInstance = new ModelInstance(heightMesh.GetModelInstance());
 
-		InputMultiplexer inputMultiplexer = new InputMultiplexer(new CameraInputController(camera), new AppInput());
+		InputMultiplexer inputMultiplexer = new InputMultiplexer(cameraInputController = new CameraInputController(camera), new AppInput());
 		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
 
@@ -76,7 +78,7 @@ public class PerlinNoiseApp extends ApplicationAdapter
 
 	private void Update()
 	{
-
+		cameraInputController.update();
 	}
 
 	@Override
