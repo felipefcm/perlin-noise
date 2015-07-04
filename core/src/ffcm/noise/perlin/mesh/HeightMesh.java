@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -18,7 +17,6 @@ public class HeightMesh
     private float zValue;
 
     private Model model;
-    private ModelInstance modelInstance;
 
     public HeightMesh(int size, float zValue)
     {
@@ -90,10 +88,11 @@ public class HeightMesh
                 vertices[index++] = c;
                 vertices[index++] = -r;
                 vertices[index++] = zValue;
+                //vertices[index++] = MathUtils.random();
 
-                vertices[index++] = 0;
-                vertices[index++] = 0;
-                vertices[index++] = 1.0f;
+                vertices[index++] = 0.5f;
+                vertices[index++] = 0.5f;
+                vertices[index++] = 0.5f;
                 vertices[index++] = 1.0f;
             }
         }
@@ -107,12 +106,16 @@ public class HeightMesh
 		    builder.part("terrain", mesh, GL20.GL_TRIANGLE_STRIP, new Material());
         }
 		model = builder.end();
-
-		modelInstance = new ModelInstance(model);
     }
 
-	public ModelInstance GetModelInstance()
+	public Model GetModel()
     {
-        return modelInstance;
+        return model;
+    }
+
+    public void Dispose()
+    {
+        if(model != null)
+            model.dispose();
     }
 }

@@ -4,6 +4,7 @@ package ffcm.noise.perlin.shader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
@@ -16,8 +17,12 @@ public class HeightMapShader implements Shader
     private Camera camera;
     private RenderContext renderContext;
 
+    private Texture noiseTexture;
+
     private int u_worldTransUniformLocation;
     private int u_projViewTransUniformLocation;
+    private int u_textureUniformLocation;
+    private int u_textureSizeUniformLocation;
 
     @Override
     public void init()
@@ -27,8 +32,13 @@ public class HeightMapShader implements Shader
 		if(!shaderProgram.isCompiled())
 		    throw new GdxRuntimeException(shaderProgram.getLog());
 
+        if(shaderProgram.getLog().length() > 0)
+            Gdx.app.log("ShaderLog", "ShaderLog: " + shaderProgram.getLog());
+
         u_worldTransUniformLocation = shaderProgram.getUniformLocation("u_worldTrans");
         u_projViewTransUniformLocation = shaderProgram.getUniformLocation("u_projViewTrans");
+        u_textureUniformLocation = shaderProgram.getUniformLocation("u_texture");
+        u_textureSizeUniformLocation = shaderProgram.getUniformLocation("u_textureSize");
     }
 
     @Override
@@ -38,6 +48,13 @@ public class HeightMapShader implements Shader
         renderContext = context;
 
         shaderProgram.begin();
+
+        if(noiseTexture != null)
+        {
+            noiseTexture.bind(0);
+            shaderProgram.setUniformi(u_textureUniformLocation, 0);
+            shaderProgram.setUniform2fv(u_textureSizeUniformLocation, new float[]{noiseTexture.getWidth(), noiseTexture.getHeight()}, 0, 2);
+        }
 
         shaderProgram.setUniformMatrix(u_projViewTransUniformLocation, camera.combined);
 
@@ -64,6 +81,11 @@ public class HeightMapShader implements Shader
         shaderProgram.end();
     }
 
+    public void SetNoiseTexture(Texture texture)
+    {
+        noiseTexture = texture;
+    }
+
     @Override
     public int compareTo(Shader other)
     {
@@ -80,5 +102,10 @@ public class HeightMapShader implements Shader
     public void dispose()
     {
         shaderProgram.dispose();
+    }
+
+    public ShaderProgram GetProgram()
+    {
+        return shaderProgram;
     }
 }
