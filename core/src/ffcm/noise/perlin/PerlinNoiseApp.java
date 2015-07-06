@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,7 +27,7 @@ public class PerlinNoiseApp extends ApplicationAdapter
 	public static final int V_HEIGHT = 768;
 	public static final float DESKTOP_SCALE = 1.0f;
 
-	public static final int MESH_SIZE = 32;
+	public static final int MESH_SIZE = 64;
 
 	private PerspectiveCamera camera;
 	private HeightMapShader heightMapShader;
@@ -49,19 +50,19 @@ public class PerlinNoiseApp extends ApplicationAdapter
 		instance = this;
 
 		camera = new PerspectiveCamera(60.0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.position.set(MESH_SIZE * 0.5f, MESH_SIZE * -0.5f, 30.0f);
+		camera.position.set(MESH_SIZE * 0.5f, MESH_SIZE * -0.5f, MESH_SIZE * 1.25f);
 		//camera.lookAt(0.0f, 0.0f, 0.0f);
 		camera.near = 1.0f;
-		camera.far = 100.0f;
+		camera.far = 200.0f;
 		camera.update();
 
 		heightMapShader = new HeightMapShader();
 		heightMapShader.init();
 
-		textureGenerator = new TextureGenerator2D(8, MESH_SIZE);
-		noiseTexture = textureGenerator.GenerateNoiseTexture();
+		GenerateNoiseData();
 
-		heightMapShader.SetNoiseTexture(noiseTexture);
+        Gdx.app.log("NoiseGenerator", "Writing noise texture in " + Gdx.files.getExternalStoragePath());
+        PixmapIO.writePNG(Gdx.files.external("noiseTexture.png"), textureGenerator.pixmap);
 
 		spriteBatch = new SpriteBatch();
 		modelBatch = new ModelBatch();
@@ -112,6 +113,14 @@ public class PerlinNoiseApp extends ApplicationAdapter
 	{
 		cameraInputController.update();
 	}
+
+	public void GenerateNoiseData()
+    {
+        textureGenerator = new TextureGenerator2D(16, MESH_SIZE);
+
+        noiseTexture = textureGenerator.GenerateNoiseTexture();
+        heightMapShader.SetNoiseTexture(noiseTexture);
+    }
 
 	@Override
 	public void resize(int width, int height)

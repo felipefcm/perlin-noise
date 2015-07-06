@@ -53,7 +53,7 @@ public class HeightMapShader implements Shader
         {
             noiseTexture.bind(0);
             shaderProgram.setUniformi(u_textureUniformLocation, 0);
-            shaderProgram.setUniform2fv(u_textureSizeUniformLocation, new float[]{noiseTexture.getWidth(), noiseTexture.getHeight()}, 0, 2);
+            shaderProgram.setUniformf(u_textureSizeUniformLocation, (float) noiseTexture.getWidth());
         }
 
         shaderProgram.setUniformMatrix(u_projViewTransUniformLocation, camera.combined);

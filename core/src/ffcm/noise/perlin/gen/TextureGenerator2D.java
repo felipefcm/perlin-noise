@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.Date;
 
-import ffcm.noise.perlin.gen.interpolation.LinearInterpolation;
+import ffcm.noise.perlin.gen.interpolation.CosineInterpolation;
 
 public class TextureGenerator2D
 {
@@ -20,6 +20,7 @@ public class TextureGenerator2D
 	public int numOctaves = 8;
 
 	private ValueNoise2d noise;
+	public Pixmap pixmap;
 
 	private int textureSize;
 
@@ -32,16 +33,11 @@ public class TextureGenerator2D
 
 	public Texture GenerateNoiseTexture()
 	{
-		Pixmap pixmap = new Pixmap(textureSize, textureSize, Pixmap.Format.RGB888);
+		pixmap = new Pixmap(textureSize, textureSize, Pixmap.Format.RGB888);
 
 		Gdx.app.log("NoiseGenerator", "NumOctaves = " + numOctaves);
 
 		long startTime = TimeUtils.millis();
-
-        //Interpolation interpolation = new HermiteCubicInterpolation();
-        ffcm.noise.perlin.gen.interpolation.Interpolation interpolation = new LinearInterpolation();
-
-		float maxVal = 0;
 
 		for(int r = 0; r < pixmap.getHeight(); ++r)
 		{
@@ -51,16 +47,21 @@ public class TextureGenerator2D
 				float amplitude = GAIN;
 
 				float noiseValue = 0;
+				float maxVal = 0;
 
 				for(int oc = 0; oc < numOctaves; ++oc)
 				{
-					noiseValue += noise.GetNoiseValue(c * frequency, r * frequency, interpolation) * amplitude;
+					noiseValue += noise.GetNoiseValue(c * frequency, r * frequency, new CosineInterpolation()) * amplitude;
+
+					maxVal += amplitude;
 					frequency *= LACUNARITY;
 					amplitude *= GAIN;
 				}
 
-				if(noiseValue > Math.abs(maxVal))
-					maxVal = Math.abs(noiseValue);
+                if(noiseValue < 0)
+				    noiseValue *= -1.0f;
+
+				noiseValue /= maxVal;
 
 				int color = Color.rgba8888(noiseValue, noiseValue, noiseValue, 1.0f);
 
@@ -69,9 +70,9 @@ public class TextureGenerator2D
 		}
 
 		Texture texture = new Texture(pixmap);
+		texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
-		Gdx.app.log("NoiseGenerator", "Amplitude = " + maxVal);
-		Gdx.app.log("NoiseGenerator", "Generated noise texture in " + TimeUtils.timeSinceMillis(startTime) + "ms");
+        Gdx.app.log("NoiseGenerator", "Generated noise texture in " + TimeUtils.timeSinceMillis(startTime) + "ms");
 
 		return texture;
 	}

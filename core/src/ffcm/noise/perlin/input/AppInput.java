@@ -20,9 +20,7 @@ public class AppInput extends InputAdapter
     {
         if(keycode == Input.Keys.G)
         {
-            //app.CreateNoiseGenerator();
-            //app.GenerateNoiseTexture();
-
+            app.GenerateNoiseData();
             return true;
         }
 
