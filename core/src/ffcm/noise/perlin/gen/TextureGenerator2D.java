@@ -17,7 +17,7 @@ public class TextureGenerator2D
 
 	public int numOctaves = 8;
 
-	private PerlinNoise2d noise;
+	private ValueNoise2d noise;
 
 	private int textureSize;
 
@@ -25,7 +25,7 @@ public class TextureGenerator2D
 	{
 		this.textureSize = textureSize;
 
-		noise = new PerlinNoise2d(new Date().getTime(), matrixSize);
+		noise = new ValueNoise2d(new Date().getTime(), matrixSize);
 	}
 
 	public Texture GenerateNoiseTexture()
@@ -36,7 +36,7 @@ public class TextureGenerator2D
 
 		long startTime = TimeUtils.millis();
 
-        //Interpolation interpolation = new PolyInterpolation();
+        //Interpolation interpolation = new HermiteCubicInterpolation();
         Interpolation interpolation = new LinearInterpolation();
 
 		float maxVal = 0;

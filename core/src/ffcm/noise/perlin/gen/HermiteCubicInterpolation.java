@@ -1,7 +1,7 @@
 
 package ffcm.noise.perlin.gen;
 
-public class PolyInterpolation implements Interpolation
+public class HermiteCubicInterpolation implements Interpolation
 {
     public float Interpolate(float v0, float a, float v1)
 	{
