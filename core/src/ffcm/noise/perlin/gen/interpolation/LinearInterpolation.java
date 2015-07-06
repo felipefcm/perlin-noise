@@ -1,5 +1,5 @@
 
-package ffcm.noise.perlin.gen;
+package ffcm.noise.perlin.gen.interpolation;
 
 public class LinearInterpolation implements Interpolation
 {

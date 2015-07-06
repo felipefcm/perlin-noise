@@ -9,6 +9,8 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.Date;
 
+import ffcm.noise.perlin.gen.interpolation.LinearInterpolation;
+
 public class TextureGenerator2D
 {
     //noise arguments
@@ -37,7 +39,7 @@ public class TextureGenerator2D
 		long startTime = TimeUtils.millis();
 
         //Interpolation interpolation = new HermiteCubicInterpolation();
-        Interpolation interpolation = new LinearInterpolation();
+        ffcm.noise.perlin.gen.interpolation.Interpolation interpolation = new LinearInterpolation();
 
 		float maxVal = 0;
 

@@ -22,7 +22,7 @@ public class ValueNoise3d
 					matrix[r][c][p] = MathUtils.random(-1.0f, 1.0f);
 	}
 	
-	public float GetNoiseValue(final float x, final float y, final float z, final Interpolation interpolation)
+	public float GetNoiseValue(final float x, final float y, final float z, final ffcm.noise.perlin.gen.interpolation.Interpolation interpolation)
 	{
 		int xI = (int) x;
 		int yI = (int) y;

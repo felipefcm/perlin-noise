@@ -21,7 +21,7 @@ public class ValueNoise2d
                 matrix[r][c] = MathUtils.random(-1.0f, 1.0f);
 	}
 	
-	public float GetNoiseValue(final float x, final float y, final Interpolation interpolation)
+	public float GetNoiseValue(final float x, final float y, final ffcm.noise.perlin.gen.interpolation.Interpolation interpolation)
 	{
 		int xI = (int) x;
 		int yI = (int) y;
